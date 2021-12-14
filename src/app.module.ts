@@ -8,7 +8,7 @@ import { SequelizeModule } from '@nestjs/sequelize';
     SequelizeModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
-        dialect: 'mysql',
+        dialect: 'sqlite',
         host: configService.get('DB_HOST'),
         port: +configService.get('DB_PORT'),
         username: configService.get('DB_USERNAME'),
