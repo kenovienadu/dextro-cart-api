@@ -1,16 +1,20 @@
 import { Injectable } from "@nestjs/common";
-import { InjectModel } from '@nestjs/sequelize';
-import { ProductCategory } from "src/interfaces";
-import { CatchAndReturnNull, generateId } from "src/utilities";
-import { Product } from "./models/product.model";
+import { ProductCategory } from "src/interfaces-and-types";
+import { CatchAndReturnNull, generateId } from "src/utils/utilities";
+import { Product } from "./models/product.entity";
+import { Repository, Sequelize } from 'sequelize-typescript';
 
 @Injectable()
 export class ProductRepository {
 
-  constructor(
-    @InjectModel(Product)
-    private productModel: typeof Product
-  ) { }
+  // constructor(@InjectModel(Product) private productModel: typeof Product) { }
+
+  productModel: Repository<Product>
+
+  constructor(private sequelize: Sequelize) {
+    this.productModel = this.sequelize.getRepository(Product);
+  }
+
 
   async addProduct(details: Pick<Product, 'title' | 'description' | 'image' | 'stock' | 'price'>) {
     const product = await this.productModel.create({
@@ -37,27 +41,34 @@ export class ProductRepository {
     return product || null;
   }
 
-  async getProducts(category: ProductCategory | null = null) {
+  async getProducts(category: ProductCategory | '' = '', isDeleted: boolean = false): Promise<Product[] | null> {
 
     const filterQuery = category ? {
       where: {
-        category: category
+        category: category,
+        isDeleted
       }
-    } : {};
+    } : {
+      where: {
+        isDeleted
+      }
+    };
 
     const products = await this.productModel.findAll(filterQuery).catch(CatchAndReturnNull);
 
-    return products
+    return products as Product[] || null
   }
 
   async deleteProduct(id: string) {
     const product = await this.getProduct(id);
 
     if (!product) {
-      return null;
+      return false;
     }
 
     product.isDeleted = true;
     await product.save();
+
+    return true;
   }
 }

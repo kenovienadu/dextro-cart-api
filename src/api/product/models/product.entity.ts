@@ -1,5 +1,5 @@
 import { Column, IsIn, IsUUID, Model, PrimaryKey, Table } from 'sequelize-typescript';
-import { ProductCategory } from 'src/interfaces';
+import { ProductCategory } from 'src/interfaces-and-types';
 
 @Table
 export class Product extends Model {

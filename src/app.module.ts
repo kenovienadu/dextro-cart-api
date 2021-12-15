@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SequelizeModule } from '@nestjs/sequelize';
+import { ProductModule } from './api/product/product.module';
 
 @Module({
   imports: [
@@ -14,10 +15,13 @@ import { SequelizeModule } from '@nestjs/sequelize';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
-        autoLoadModels: true
+        autoLoadModels: true,
+        synchronize: true
       }),
       inject: [ConfigService],
-    })
+    }),
+
+    ProductModule
   ],
   controllers: [],
   providers: [],
