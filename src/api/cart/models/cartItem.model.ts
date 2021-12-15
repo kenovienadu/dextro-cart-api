@@ -2,7 +2,7 @@
 export class CartItem {
   id: string
   title: string
-  photo: string
-  price: string
+  image: string
+  price: number
   quantity: number
 }
