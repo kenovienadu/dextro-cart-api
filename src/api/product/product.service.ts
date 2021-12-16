@@ -2,6 +2,7 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { ProductCategory } from "src/interfaces-and-types";
 import { CreateProductDTO } from "./dtos/createProduct.dto";
+import { Product } from "./models/product.entity";
 import { ProductRepository } from "./product.repository";
 
 
@@ -28,7 +29,7 @@ export class ProductService {
       throw new NotFoundException('Sorry, product not found')
     }
 
-    return product.toJSON();
+    return product.toJSON() as Pick<Product, 'id' | 'image' | 'description' | 'title' | 'price' | 'stock'>;
   }
 
   async getProductsInCategory(category: ProductCategory | '' = '', deleted = false) {

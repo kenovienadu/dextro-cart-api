@@ -32,3 +32,5 @@ export const CatchAndReturnNull = (returnValueOrError: any) => {
     return returnValueOrError;
   }
 }
+
+export const getUserCartKey = (userId: string) => `CART-${userId}`;
