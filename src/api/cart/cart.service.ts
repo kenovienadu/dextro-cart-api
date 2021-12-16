@@ -1,31 +1,22 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import { TWENTY_FOUR_HOURS } from "src/constants";
 import { getUserCartKey } from "src/utils/utilities";
 import { CacheService } from "../common/providers/cache.service";
 import { ProductService } from "../product/product.service";
-import { CartHelpers } from "./cart.helper";
 import { Cart, CartDTO } from "./models/cart.model";
 import { CartItem } from "./models/cartItem.model";
 
-
 @Injectable()
-export class CartService extends CartHelpers {
+export class CartService {
 
   constructor(
     private productService: ProductService,
-    private cacheService: CacheService
-  ) {
-    super()
-  }
+    private cacheService: CacheService,
+  ) { }
 
   async saveUserCart(userId: string, cart: Cart) {
-    console.log('BEFORE SAVING');
-    await this.cacheService.logCacheKeys();
-
     const cartKey = getUserCartKey(userId);
-    await this.cacheService.set(cartKey, cart);
-
-    console.log('AFTER SAVING');
-    await this.cacheService.logCacheKeys();
+    await this.cacheService.set(cartKey, cart, TWENTY_FOUR_HOURS);
   }
 
   async getUserCart(userId: string, asDTO = true) {
@@ -37,6 +28,9 @@ export class CartService extends CartHelpers {
     }
 
     const data = asDTO ? this.transformCartToDTO(cart) : cart;
+
+    console.log(data);
+
     return data;
   }
 
@@ -90,10 +84,13 @@ export class CartService extends CartHelpers {
 
     cart.items.delete(productId);
     await this.saveUserCart(ownerId, cart);
+
+    return this.transformCartToDTO(cart);
   }
 
   async modifyItemQuantity(ownerId: string, productId: string, quantity: number) {
-    const userCart = await this.getUserCart(ownerId, false) as Cart;
+    console.log('DEBUG', ownerId);
+    let userCart = await this.getUserCart(ownerId, false) as Cart;
 
     const item = userCart.items.get(productId);
 
@@ -101,16 +98,44 @@ export class CartService extends CartHelpers {
       throw new BadRequestException('Item is not in cart');
     }
 
+    if (quantity === 0) {
+      const cartDTO = await this.removeCartItem(ownerId, productId);
+      return cartDTO;
+    }
+
     item.quantity = quantity;
     userCart.items.set(productId, item);
 
     await this.saveUserCart(ownerId, userCart);
+
+    return this.transformCartToDTO(userCart);
   }
 
   async clearUserCart(userId: string) {
     await this.getUserCart(userId);
     const cartKey = getUserCartKey(userId);
     await this.cacheService.del(cartKey);
+  }
+
+  transformCartToDTO(cart: Cart): CartDTO {
+    const items = Array.from(cart.items, ([_, item]) => item);
+    const total = this.getCartTotal(items);
+
+    return {
+      items,
+      total,
+      ownerId: cart.ownerId,
+    }
+  }
+
+  getCartTotal(items: CartItem[]) {
+    let total = 0;
+
+    for (const item of items) {
+      total += (item.price * item.quantity)
+    }
+
+    return total;
   }
 
 }

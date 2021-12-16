@@ -19,7 +19,7 @@ export class CacheService implements OnModuleInit {
     return data;
   }
 
-  async set(key: string, value: unknown, ttl = 0) {
+  async set(key: string, value: unknown, ttl = 1000) {
     await this.cacheManager.set(key, value, { ttl });
   }
 

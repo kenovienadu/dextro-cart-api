@@ -8,7 +8,7 @@ import { ProductModule } from './api/product/product.module';
   imports: [
     ConfigModule.forRoot(),
     CacheModule.register({
-      isGlobal: true
+      isGlobal: true,
     }),
     SequelizeModule.forRootAsync({
       imports: [ConfigModule],

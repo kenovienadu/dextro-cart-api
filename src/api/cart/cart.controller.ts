@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Param, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
 import { SuccessResponse } from "src/utils/successResponse";
 import { CartService } from "./cart.service";
 import { AddToCartDTO } from "./dtos/addToCart.dto";
+import { ModifyCartItemDTO } from "./dtos/modifyCartItem.dto";
 import { CartDTO } from "./models/cart.model";
 
 
@@ -23,7 +24,25 @@ export class CartController {
     return new SuccessResponse('cart added', data)
   }
 
-  @Get('clear/:userId')
+  @Put(':userId')
+  async modifyItemInCart(
+    @Body() body: ModifyCartItemDTO,
+    @Param('userId') userId: string,
+  ) {
+    const data = await this.cartService.modifyItemQuantity(userId, body.productId, body.quantity);
+    return new SuccessResponse('cart modified', data);
+  }
+
+  @Delete(':userId/:productId')
+  async removeCartItem(
+    @Param('userId') userId: string,
+    @Param('productId') productId: string,
+  ) {
+    const data = await this.cartService.removeCartItem(userId, productId);
+    return new SuccessResponse('cart modified', data);
+  }
+
+  @Delete(':userId/clear')
   async clearCart(@Param('userId') userId: string) {
     await this.cartService.clearUserCart(userId);
     return new SuccessResponse('cart cleared')
