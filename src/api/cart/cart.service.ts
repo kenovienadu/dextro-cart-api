@@ -18,8 +18,14 @@ export class CartService extends CartHelpers {
   }
 
   async saveUserCart(userId: string, cart: Cart) {
+    console.log('BEFORE SAVING');
+    await this.cacheService.logCacheKeys();
+
     const cartKey = getUserCartKey(userId);
     await this.cacheService.set(cartKey, cart);
+
+    console.log('AFTER SAVING');
+    await this.cacheService.logCacheKeys();
   }
 
   async getUserCart(userId: string, asDTO = true) {
@@ -37,7 +43,8 @@ export class CartService extends CartHelpers {
   async addCartItem(ownerId: string, productId: string, quantity: number) {
     let cart: Cart | null = null;
 
-    cart = await this.getUserCart(ownerId, false) as Cart
+    const userCartKey = getUserCartKey(ownerId)
+    cart = await this.cacheService.get(userCartKey) as Cart
 
     const productItem = await this.productService.getProduct(productId);
 
@@ -60,11 +67,13 @@ export class CartService extends CartHelpers {
 
     const itemInCart = cart.items.get(cartItem.id);
 
-    if (!itemInCart) {
-      return;
+    if (itemInCart) {
+      return this.transformCartToDTO(cart);
     }
 
     cart.items.set(cartItem.id, cartItem); // Add to cart if not existing in cart
+    cart.total = this.getCartTotal([cartItem])
+
     await this.saveUserCart(ownerId, cart);
 
     return this.transformCartToDTO(cart);
