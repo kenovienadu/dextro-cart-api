@@ -12,13 +12,13 @@ type Cart {
   total: Int!
 }
 
-type AddToCartDTO {
+input AddToCartDTO {
   ownerId: String!
   productId: String!
   quantity: Int!
 }
 
-type ModifyCartItemDTO {
+input ModifyCartItemDTO {
   ownerId: String!
   productId: String!
   quantity: Int!

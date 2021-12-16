@@ -1,4 +1,4 @@
-import { IsEnum, IsNumber, IsOptional, IsString, IsIn } from "class-validator";
+import { IsNumber, IsOptional, IsString, IsIn } from "class-validator";
 import { ProductCategory } from "src/interfaces-and-types";
 
 

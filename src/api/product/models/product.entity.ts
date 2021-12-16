@@ -10,6 +10,9 @@ export class Product extends Model {
   id: string
 
   @Column
+  sku: string
+
+  @Column
   title: string
 
   @Column

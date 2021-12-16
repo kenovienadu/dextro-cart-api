@@ -1,3 +1,5 @@
+import { ProductCategory } from "src/interfaces-and-types";
+
 const { v4: uuidv4 } = require('uuid');
 
 export const generateId = (): string => {
@@ -34,3 +36,12 @@ export const CatchAndReturnNull = (returnValueOrError: any) => {
 }
 
 export const getUserCartKey = (userId: string) => `CART-${userId}`;
+
+export const generateProductSKU = (title: string, stock: number, category: ProductCategory) => {
+  const titlePart = title.slice(0, 3);
+  const stockPart = stock;
+  const categoryPart = category.slice(0, 3);
+
+  const sku = [titlePart, stockPart, categoryPart].join('/');
+  return sku.toUpperCase();
+}

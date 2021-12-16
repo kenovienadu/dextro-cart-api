@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { ProductCategory } from "src/interfaces-and-types";
-import { CatchAndReturnNull, generateId } from "src/utils/utilities";
+import { CatchAndReturnNull, generateId, generateProductSKU } from "src/utils/utilities";
 import { Product } from "./models/product.entity";
 import { Repository, Sequelize } from 'sequelize-typescript';
 
@@ -16,9 +16,12 @@ export class ProductRepository {
   }
 
 
-  async addProduct(details: Pick<Product, 'title' | 'description' | 'image' | 'stock' | 'price'>) {
+  async addProduct(details: Pick<Product, 'title' | 'description' | 'image' | 'stock' | 'price' | 'category'>) {
+    const sku = generateProductSKU(details.title, details.stock, details.category as ProductCategory);
+
     const product = await this.productModel.create({
       ...details,
+      sku,
       id: generateId()
     });
 
@@ -70,5 +73,10 @@ export class ProductRepository {
     await product.save();
 
     return true;
+  }
+
+  async createBulk(products: Pick<Product, 'title' | 'description' | 'image' | 'stock' | 'price'>[]) {
+    const savedProducts = await this.productModel.bulkCreate(products);
+    return savedProducts?.length ? savedProducts : [];
   }
 }
