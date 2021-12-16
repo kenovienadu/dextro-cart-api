@@ -3,13 +3,19 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { CartModule } from './api/cart/cart.module';
 import { ProductModule } from './api/product/product.module';
+import { GraphQLModule } from '@nestjs/graphql';
+import { join } from 'path';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true
+    }),
+
     CacheModule.register({
       isGlobal: true,
     }),
+
     SequelizeModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
@@ -23,6 +29,15 @@ import { ProductModule } from './api/product/product.module';
         synchronize: true
       }),
       inject: [ConfigService],
+    }),
+
+    GraphQLModule.forRoot({
+      playground: true,
+      typePaths: ['./**/*.graphql'],
+      definitions: {
+        path: join(process.cwd(), 'src/graphql.ts'),
+        outputAs: 'class',
+      },
     }),
 
     ProductModule,
