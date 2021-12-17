@@ -9,7 +9,7 @@ async function bootstrap() {
   app.setGlobalPrefix('v1/api');
   app.useGlobalPipes(new ValidationPipe());
 
-  await app.listen(+ 3000);
+  await app.listen(PORT);
   console.log('APP LISTENING ON PORT ' + PORT);
 }
 
