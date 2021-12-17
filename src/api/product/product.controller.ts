@@ -13,7 +13,7 @@ export class ProductsController {
 
   @Get()
   async getProducts(@Query('category') category: ProductCategory | '') {
-    const products = await this.productService.getProductsInCategory(category);
+    const products = await this.productService.getProducts(category);
     return new SuccessResponse('products retrieved', products)
   }
 

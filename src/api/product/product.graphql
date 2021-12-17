@@ -27,7 +27,7 @@ input AddProductInput {
 }
 
 type Query {
-  getProducts(category: ProductCategory): [Product]
+  getProducts(category: ProductCategory, page: Int): [Product]
 }
 
 type Mutation {

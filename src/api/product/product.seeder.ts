@@ -1,6 +1,6 @@
 import { Injectable, OnModuleInit } from "@nestjs/common";
 import { ProductCategory } from "src/interfaces-and-types";
-import { generateId, generateProductSKU } from "src/utils/utilities";
+import { envIsProd, generateId, generateProductSKU } from "src/utils/utilities";
 import { Product } from "./models/product.entity";
 import { ProductRepository } from "./product.repository";
 import * as faker from 'faker';
@@ -13,6 +13,11 @@ export class ProductSeeder implements OnModuleInit {
   ) { }
 
   async onModuleInit() {
+
+    if (!envIsProd()) {
+      return;
+    }
+
     await this.clearProducts();
     await this.seed(); 
   }

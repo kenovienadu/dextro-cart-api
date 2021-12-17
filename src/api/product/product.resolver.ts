@@ -11,8 +11,8 @@ export class ProductResolver {
   ) { }
 
   @Query()
-  getProducts(@Args('category') category: ProductCategory) {
-    return this.productService.getProductsInCategory(category || '');
+  getProducts(@Args('category') category: ProductCategory, @Args('page') page: number) {
+    return this.productService.getProducts(category || '', page);
   }
 
   @Mutation()

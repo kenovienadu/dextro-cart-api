@@ -32,8 +32,8 @@ export class ProductService {
     return product.toJSON() as Pick<Product, 'id' | 'image' | 'description' | 'title' | 'price' | 'stock'>;
   }
 
-  async getProductsInCategory(category: ProductCategory | '' = '', deleted = false) {
-    const products = await this.productRepository.getProducts(category, deleted);
+  async getProducts(category: ProductCategory | '' = '', page = 1, deleted = false) {
+    const products = await this.productRepository.getProducts(category, page, deleted);
 
     if (!products.length) {
       throw new NotFoundException('No products found');
