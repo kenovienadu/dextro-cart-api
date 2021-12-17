@@ -1,5 +1,5 @@
 import { CacheModule, Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule, } from '@nestjs/config';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { CartModule } from './api/cart/cart.module';
 import { ProductModule } from './api/product/product.module';
@@ -9,8 +9,8 @@ import { ConnectionString } from 'connection-string';
 
 require('dotenv').config()
 
-const DB = new ConnectionString(process.env.DATABASE_URL); 
-
+const DB = new ConnectionString(process.env.DATABASE_URL);
+const DATABASE_NAME = process.env.DB_NAME || 'testdb'
 @Module({ 
   imports: [
     ConfigModule.forRoot({
@@ -21,19 +21,15 @@ const DB = new ConnectionString(process.env.DATABASE_URL);
       isGlobal: true,
     }),
 
-    SequelizeModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        dialect: 'mysql',
-        host: DB.host,
-        port: DB.port,
-        username: DB.user,
-        password: DB.password,
-        database: process.env.DB_NAME || 'main',
-        autoLoadModels: true,
-        synchronize: true
-      }),
-      inject: [ConfigService],
+    SequelizeModule.forRoot({
+      dialect: 'mysql',
+      host: DB.host,
+      port: 3306,
+      username: DB.user,
+      password: DB.password,
+      autoLoadModels: true,
+      synchronize: true,
+      database: DATABASE_NAME
     }),
 
     GraphQLModule.forRoot({

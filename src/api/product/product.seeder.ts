@@ -14,7 +14,7 @@ export class ProductSeeder implements OnModuleInit {
 
   async onModuleInit() {
     await this.clearProducts();
-    await this.seed();
+    await this.seed(); 
   }
 
   async clearProducts() {
