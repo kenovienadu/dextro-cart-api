@@ -55,3 +55,9 @@ $ yarn start
 
 ## Author
 [Ken Ovienadu](https://github.com/kenovienadu)
+
+Live API - https://dextro-cart-api.herokuapp.com/v1/api
+
+GraphQL Playground - https://dextro-cart-api.herokuapp.com/graphql
+
+API Documentation - https://documenter.getpostman.com/view/11825995/UVRAGm8A
