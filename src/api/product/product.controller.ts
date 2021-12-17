@@ -12,8 +12,8 @@ export class ProductsController {
   ) { }
 
   @Get()
-  async getProducts(@Query('category') category: ProductCategory | '') {
-    const products = await this.productService.getProducts(category);
+  async getProducts(@Query('category') category: ProductCategory | '', @Query('page') page: string) {
+    const products = await this.productService.getProducts(category, parseInt(page || '1'));
     return new SuccessResponse('products retrieved', products)
   }
 
