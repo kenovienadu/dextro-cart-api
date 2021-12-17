@@ -44,7 +44,7 @@ export class ProductRepository {
     return product || null;
   }
 
-  async getProducts(category: ProductCategory | '' = '', isDeleted: boolean = false): Promise<Product[] | null> {
+  async getProducts(category: ProductCategory | '' = '', page = 1, isDeleted: boolean = false): Promise<Product[] | null> {
 
     const filterQuery = category ? {
       where: {
@@ -57,7 +57,14 @@ export class ProductRepository {
       }
     };
 
-    const products = await this.productModel.findAll(filterQuery).catch(CatchAndReturnNull);
+    const limit = 20;
+    const offset = page > 1 ? page * limit : 0;
+
+    const products = await this.productModel.findAll({
+      ...filterQuery,
+      offset,
+      limit,
+    }).catch(CatchAndReturnNull);
 
     return products as Product[] || null
   }

@@ -45,3 +45,7 @@ export const generateProductSKU = (title: string, stock: number, category: Produ
   const sku = [titlePart, stockPart, categoryPart].join('/');
   return sku.toUpperCase();
 }
+
+export const envIsProd = () => {
+  return process.env.NODE_ENV === 'production';
+}

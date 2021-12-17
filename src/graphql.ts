@@ -54,7 +54,7 @@ export abstract class IQuery {
 
     abstract removeItemInCart(userId?: Nullable<string>, productId?: Nullable<string>): Nullable<Cart> | Promise<Nullable<Cart>>;
 
-    abstract getProducts(category?: Nullable<ProductCategory>): Nullable<Nullable<Product>[]> | Promise<Nullable<Nullable<Product>[]>>;
+    abstract getProducts(category?: Nullable<ProductCategory>, page?: Nullable<number>): Nullable<Nullable<Product>[]> | Promise<Nullable<Nullable<Product>[]>>;
 }
 
 export abstract class IMutation {
