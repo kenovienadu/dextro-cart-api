@@ -1,0 +1,36 @@
+type CartItem {
+  id: String!
+  title: String!
+  image: String
+  price: Int!
+  quantity: Int!
+}
+
+type Cart {
+  ownerId: String!
+  items: [CartItem]!
+  total: Int!
+}
+
+input AddToCartDTO {
+  ownerId: String!
+  productId: String!
+  quantity: Int!
+}
+
+input ModifyCartItemDTO {
+  ownerId: String!
+  productId: String!
+  quantity: Int!
+}
+
+type Query {
+  getUserCart(id: String!): Cart
+  clearUserCart(id: String!): Cart
+  removeItemInCart(userId: String, productId: String): Cart
+}
+
+type Mutation {
+  addToCart(data: AddToCartDTO): Cart
+  modifyCartItem(data: ModifyCartItemDTO): Cart
+}

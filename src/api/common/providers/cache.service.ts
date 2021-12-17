@@ -1,18 +1,12 @@
-import { CACHE_MANAGER, Inject, Injectable, OnModuleInit } from "@nestjs/common";
+import { CACHE_MANAGER, Inject, Injectable } from "@nestjs/common";
 import { Cache } from 'cache-manager';
 
 
 @Injectable()
-export class CacheService implements OnModuleInit {
+export class CacheService {
   constructor(
     @Inject(CACHE_MANAGER) private cacheManager: Cache
   ) { }
-
-  onModuleInit() {
-    setInterval(() => {
-      this.logCacheKeys();
-    }, 5000)
-  }
 
   async get(key: string) {
     const data = await this.cacheManager.get(key);
